@@ -1,39 +1,59 @@
-html,body{
-  background-color: #222;
+@mixin dis_whole{
   width: 100%;
   height: 100%;
 }
 
+html,body{
+  @include dis_whole;
+  background-color: #222;
+}
+
 .content{
-  width: 100%;
-  height: 100%;
+  @include dis_whole;
 }
 
 /* stage --start */
 .stage{
   position: relative;
-  width: 100%;
-  height: 680px;
+  @include dis_whole;
 }
 /* stage --end */
 
 /* image start */
 .img-sec{
   position: relative;
-  width: 100%;
-  height: 100%;
+  @include dis_whole;
+  perspective: 1800px;
   overflow: hidden;
   background-color: #ddd;
 
   @at-root{
     .img-figure{
       position: absolute;
-      width: 320px;
+       width: 320px;
       height: 360px;
       margin: 0;
       padding: 40px;
-      background-color: #fff;
       box-sizing: border-box;
+      background-color: #fff;
+      cursor: pointer;
+      transform-origin: 0  0;
+      transform-style: preserve-3d;
+      transition: transform .6s ease-in-out, left .6s ease-in-out, top .6s ease-in-out;
+    }
+    .img-figureis-inverse{
+      position: absolute;
+       width: 320px;
+      height: 360px;
+      margin: 0;
+      padding: 40px;
+      box-sizing: border-box;
+      background-color: #fff;
+      cursor: pointer;
+      transform-origin: 0 50% 0;
+      transform-style: preserve-3d;
+      transition: transform .6s ease-in-out, left .6s ease-in-out, top .6s ease-in-out;
+      transform: translate(320px) rotateY(180deg);
     }
 
     figcaption{
@@ -44,6 +64,29 @@ html,body{
         color: #a7a0a2;
         font-size: 16px;
       }
+
+      .img-back {
+        position: absolute;
+        top:0;
+        left: 0;
+
+        @include dis_whole;
+        padding: 50px 40px;
+        overflow: auto;
+
+        color:#a7a0a2;
+        font-size: 22px;
+        line-height: 1.25;
+        text-align: center;
+        background-color: #fff;
+
+        box-sizing: border-box;
+
+        /*先开始时.img-back，旋转了180度，因为translateZ(1px)，位于正面图像的下方*/
+        /*当.img-figure旋转时，.img-back又旋转了180度，旋转度数为360,因为translateZ(1px)，位于正面图像的上方*/
+        transform: rotateY(180deg) translateZ(1px);
+      }
+
     }
   }
 }
