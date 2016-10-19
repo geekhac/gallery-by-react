@@ -37,7 +37,6 @@ class ImgFigure extends React.Component {
    * imgFigure的点击处理函数
    */
   handleClick(e){
-    console.log('get');
     if(this.props.arrange.isCenter){
       this.props.inverse();
     }else{
@@ -66,7 +65,7 @@ class ImgFigure extends React.Component {
     }
 
     let imgFigureClassName =  'img-figure';
-        imgFigureClassName += this.props.arrange.isInverse?'is-inverse':'';
+        imgFigureClassName += this.props.arrange.isInverse?' is-inverse':' ';
     return (
       <figure className={imgFigureClassName} style={styleObj} onClick={this.handleClick}>
         <img src={this.props.data.imageURL} alt={this.props.data.title}/>
@@ -79,6 +78,46 @@ class ImgFigure extends React.Component {
           </div>
         </figcaption>
       </figure>
+    );
+  }
+}
+
+class ControllerUnit extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  handleClick(e){
+
+    if(this.props.arrange.isCenter){
+      this.props.inverse();
+    }else{
+      this.props.center();
+
+    }
+
+    e.stopPropagation();
+    e.preventDefault();
+  }
+
+  render(){
+    let controllerName = 'controller-unit';
+
+    //对应的图片如果居中，则按钮居中
+    if(this.props.arrange.isCenter){
+      controllerName += this.props.arrange.isCenter?' is-center':' ';
+
+      //如果对应的图片翻转，则按钮旋转
+      if(this.props.arrange.isInverse){
+        controllerName += this.props.arrange.isInverse?' is-inverse':' ';
+      }
+    }
+
+    return (
+      <span className={controllerName} onClick={this.handleClick}></span>
     );
   }
 }
@@ -158,8 +197,8 @@ class AppComponent extends React.Component {
 
 
     //设置上区域图片的状态信息
-    let topImgNum = Math.ceil(Math.random() * 2),//上区域取一个或者不取
-        topImgSpliceIndex = Math.ceil(Math.random(imgsArrangeArr.length - topImgNum)),//因为要从索引位置开始取
+    let topImgNum = Math.floor(Math.random() * 2),//上区域取一个或者不取
+        topImgSpliceIndex = Math.floor(Math.random(imgsArrangeArr.length - topImgNum)),//因为要从索引位置开始取
         imgsArrangeTopArr = imgsArrangeArr.splice(topImgSpliceIndex,topImgNum);
     imgsArrangeTopArr.forEach((value,index)=>{
       imgsArrangeTopArr[index]={
@@ -220,15 +259,15 @@ class AppComponent extends React.Component {
     let stageDOM = ReactDOM.findDOMNode(this.refs.stage),
         stageW=stageDOM.scrollWidth,
         stageH=stageDOM.scrollHeight,
-        halfStageW=Math.ceil(stageW/2),
-        halfStageH=Math.ceil(stageH/2);
+        halfStageW=Math.floor(stageW/2),
+        halfStageH=Math.floor(stageH/2);
 
     //获取imgFigure的大小
     let imgFigDOM = ReactDOM.findDOMNode(this.refs.imgFigure0),
         imgFigW=imgFigDOM.scrollWidth,
         imgFigH=imgFigDOM.scrollHeight,
-        halfImgW=Math.ceil(imgFigW/2),
-        halfImgH=Math.ceil(imgFigH/2);
+        halfImgW=Math.floor(imgFigW/2),
+        halfImgH=Math.floor(imgFigH/2);
 
 
     //计算中心图片的位置
@@ -270,6 +309,7 @@ class AppComponent extends React.Component {
         };
       }
       imgFigures.push(<ImgFigure data={value} key={index} ref={'imgFigure'+index} arrange={this.state.imgsArrangeArr[index]} inverse={this.inverse(index)} center={this.center(index)}/>);
+      controllerUnits.push(<ControllerUnit key={index} arrange={this.state.imgsArrangeArr[index]} inverse={this.inverse(index)} center={this.center(index)}/>)
     });
 
     return (
